@@ -4,20 +4,17 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 class TipoProducto(models.Model):
     TipoProducto = [
-        (1, 'Herramientas Manuales'),#1- Herramientas Manuales
-        (2, 'Materiales Basicos'),#2- Materiales Basicos
-        (3, 'Equipo de Seguridad'), #3- Equipo de Seguridad
-        (4, 'Tornillos y Anclajes'), #4-Tornillos y Anclajes
-        (5, 'Fijaciones y Adhesivos'), #5-Fijaciones y Adhesivos
-        (6, 'Equipos de Medicion'), #6-Equipos de Medicion
+        ('Herramientas Manuales','Herramientas Manuales'),#1- Herramientas Manuales
+        ('Materiales Basicos', 'Materiales Basicos'),#2- Materiales Basicos
+        ('Equipo de Seguridad', 'Equipo de Seguridad'), #3- Equipo de Seguridad
+        ('Tornillos y Anclajes', 'Tornillos y Anclajes'), #4-Tornillos y Anclajes
+        ('Fijaciones y Adhesivos', 'Fijaciones y Adhesivos'), #5-Fijaciones y Adhesivos
+        ('Equipos de Medicion', 'Equipos de Medicion'), #6-Equipos de Medicion
     ]
-    id_tipo = models.IntegerField(choices=TipoProducto, primary_key=True)
+    id_tipo = models.CharField(choices=TipoProducto, primary_key=True, max_length=50)
 
     def __str__(self):
-        for tipo_id, tipo_nombre in self.TipoProducto:
-            if tipo_id == self.id_tipo:
-                return tipo_nombre
-        return str(self.id_tipo)
+        return self.id_tipo
 
  #   def __str__(self):
     #    return str(self.tipo_nombre)
