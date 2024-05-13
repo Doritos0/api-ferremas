@@ -10,8 +10,8 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 
 #IMPORTAMOS EL MODELO
-from .models import Productos, TipoProducto, Cliente, Pedido
-from .serializers import ProductoSerializer, TipoProductoSerializer, ClienteSerializer, PedidoSerializer
+from .models import Producto, TipoProducto, Cliente, Pedido, Stock
+from .serializers import ProductoSerializer, TipoProductoSerializer, ClienteSerializer, PedidoSerializer, StockSerializer
 
 # Create your views here.
 
@@ -21,7 +21,7 @@ from .serializers import ProductoSerializer, TipoProductoSerializer, ClienteSeri
 @api_view(['GET', 'POST'])
 def lista_productos (request):
     if request.method == 'GET':
-        query = Productos.objects.all()
+        query = Producto.objects.all()
         serializer = ProductoSerializer(query, many = True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -30,7 +30,7 @@ def lista_productos (request):
         if serializer.is_valid():
             id = request.POST.get('id_producto', None)
             print(id)
-            if id in Productos.objects.values_list('id_producto', flat=True):
+            if id in Producto.objects.values_list('id_producto', flat=True):
                 print("💙 ESTE PRODUCTO YA HA SIDO INGRESADO")
                 return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -44,8 +44,8 @@ def lista_productos (request):
 @api_view(['GET','PATCH','DELETE'])
 def detalle_producto (request,id):
     try:
-        producto = Productos.objects.get(id_producto=id)
-    except Productos.DoesNotExist:
+        producto = Producto.objects.get(id_producto=id)
+    except Producto.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer = ProductoSerializer(producto)
@@ -194,4 +194,49 @@ def detalle_pedido (request,id):
 
     elif request.method == 'DELETE':
         pedido.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+#API TABLA STOCK
+@api_view(['GET', 'POST'])
+def lista_stocks(request):
+    if request.method == 'GET':
+        query = Stock.objects.all()
+        serializer = StockSerializer(query, many = True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = StockSerializer(data = request.data)
+        print("❤️ ", serializer)
+        if serializer.is_valid():
+            id = request.POST.get('id_stock', None)
+            print(id)
+            if id in Stock.objects.values_list('id_stock', flat=True):
+                print("💙 ESTE PRODUCTO YA HA SIDO INGRESADO")
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET','PATCH','DELETE'])
+def detalle_stock (request,id):
+    try:
+        stock = Stock.objects.get(id_stock=id)
+    except Stock.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = PedidoSerializer(stock)
+        return Response(serializer.data)
+    elif request.method == 'PATCH':
+        serializer = PedidoSerializer(stock, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        stock.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
