@@ -264,3 +264,25 @@ def lista_precios(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET','PATCH','DELETE'])
+def detalle_precio (request,id):
+    try:
+        precio = Precio.objects.get(id_precio=id)
+    except Precio.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = PrecioSerializer(precio)
+        return Response(serializer.data)
+    elif request.method == 'PATCH':
+        serializer = PrecioSerializer(precio, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        precio.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
