@@ -227,10 +227,10 @@ def detalle_stock (request,id):
     except Stock.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        serializer = PedidoSerializer(stock)
+        serializer = StockSerializer(stock)
         return Response(serializer.data)
     elif request.method == 'PATCH':
-        serializer = PedidoSerializer(stock, data=request.data, partial=True)
+        serializer = StockSerializer(stock, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
