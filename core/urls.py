@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import lista_productos, detalle_producto, lista_tipos, detalle_tipo, lista_clientes, detalle_cliente, lista_pedidos, detalle_pedido, lista_stocks, detalle_stock, lista_precios, detalle_precio
+from .views import lista_productos, detalle_producto, lista_tipos, detalle_tipo, lista_clientes, detalle_cliente, lista_pedidos, detalle_pedido, lista_stocks, detalle_stock, lista_precios, detalle_precio#, lista_ofertas, detalle_oferta
 
 urlpatterns=[
     path('lista_productos/',lista_productos, name="lista_productos"),
@@ -14,4 +14,6 @@ urlpatterns=[
     path('detalle_stock/<id>', detalle_stock, name="detalle_stock"),
     path('lista_precios/',lista_precios, name="lista_precios"),
     path('detalle_precio/<id>', detalle_precio, name="detalle_precio"),
+    #path('lista_ofertas/',lista_ofertas, name="lista_ofertas"),
+    #path('detalle_oferta/<id>', detalle_oferta, name="detalle_oferta"),
 ]

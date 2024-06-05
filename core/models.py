@@ -21,12 +21,23 @@ class TipoProducto(models.Model):
 
 
 class Producto(models.Model):
+    Oferta = [
+        (1, 'Si'),
+        (0, 'No'),
+    ]
     id_producto = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=25, unique=True)
-    id_tipo = models.ForeignKey(TipoProducto, on_delete=models.CASCADE)
+    oferta = models.IntegerField(choices=Oferta)
+    porcentaje = models.IntegerField(null=True, blank=True)
+    id_tipo = models.ForeignKey('TipoProducto', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Producto {self.nombre}"
+
+    def save(self, *args, **kwargs):
+        if self.porcentaje is not None and (self.porcentaje < 0 or self.porcentaje > 100):
+            raise ValueError("El porcentaje debe estar entre 0 y 100.")
+        super().save(*args, **kwargs)
 
 
 class Stock(models.Model):
@@ -72,5 +83,13 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido {self.fecha_pedido}"
-    
 
+'''
+class Oferta(models.Model):
+    id_oferta = models.AutoField(primary_key=True)
+    id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    porcentaje = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.id_producto.nombre} con {self.porcentaje}% de oferta"
+'''

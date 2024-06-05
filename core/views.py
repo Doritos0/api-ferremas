@@ -10,8 +10,8 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 
 #IMPORTAMOS EL MODELO
-from .models import Producto, TipoProducto, Cliente, Pedido, Stock, Precio
-from .serializers import ProductoSerializer, TipoProductoSerializer, ClienteSerializer, PedidoSerializer, StockSerializer, PrecioSerializer
+from .models import Producto, TipoProducto, Cliente, Pedido, Stock, Precio#, Oferta
+from .serializers import ProductoSerializer, TipoProductoSerializer, ClienteSerializer, PedidoSerializer, StockSerializer, PrecioSerializer#, OfertaSerializer
 
 # Create your views here.
 
@@ -286,3 +286,51 @@ def detalle_precio (request,id):
         precio.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+'''
+#API TABLA OFERTA
+@api_view(['GET', 'POST'])
+def lista_ofertas(request):
+    if request.method == 'GET':
+        query = Oferta.objects.all()
+        serializer = OfertaSerializer(query, many = True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = OfertaSerializer(data = request.data)
+        print("❤️ ", serializer)
+        if serializer.is_valid():
+            id = request.POST.get('id_oferta', None)
+            print(id)
+            if id in Oferta.objects.values_list('id_oferta', flat=True):
+                print("💙 ESTA OFERTA YA HA SIDO INGRESADA")
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET','PATCH','DELETE'])
+def detalle_oferta (request,id):
+    try:
+        oferta = Oferta.objects.get(id_oferta=id)
+    except Oferta.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = OfertaSerializer(oferta)
+        return Response(serializer.data)
+    elif request.method == 'PATCH':
+        serializer = OfertaSerializer(oferta, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        oferta.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+'''
