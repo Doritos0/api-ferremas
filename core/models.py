@@ -75,11 +75,18 @@ class Pedido(models.Model):
         ('En proceso','En proceso'),
         ('Completado','Completado'),
     ]
+    Tipo_Pedido = [
+        (0,'Retiro en Tienda'),
+        (1,'Envio'),
+    ]
     id_pedido = models.AutoField(primary_key=True)
-    rut_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    direccion = models.CharField(max_length = 100)
+    correo = models.CharField(max_length=100)
+    detalle_pedido = models.CharField(max_length=1000, editable=False)
     fecha_pedido = models.DateField(auto_now_add=True)
+    tipo_pedido = models.IntegerField(choices = Tipo_Pedido)
     estado_pedido = models.CharField(choices=Estado, max_length=10)
-    total = models.IntegerField()
+    total = models.IntegerField(editable=False)
 
     def __str__(self):
         return f"Pedido {self.fecha_pedido}"
