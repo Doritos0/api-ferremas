@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+import json
 
 # Create your models here.
 class TipoProducto(models.Model):
@@ -86,11 +87,11 @@ class Pedido(models.Model):
     fecha_pedido = models.DateField(auto_now_add=True)
     tipo_pedido = models.IntegerField(choices = Tipo_Pedido)
     estado_pedido = models.CharField(choices=Estado, max_length=10)
-    total = models.IntegerField(editable=False)
+    total = models.IntegerField()
 
     def __str__(self):
         return f"Pedido {self.fecha_pedido}"
-
+    
 '''
 class Oferta(models.Model):
     id_oferta = models.AutoField(primary_key=True)
