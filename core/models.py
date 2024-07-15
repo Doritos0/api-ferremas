@@ -59,16 +59,18 @@ class Precio(models.Model):
     def __str__(self):
         return f"Precio {self.fec_ini} termino {self.fec_ter}"
 
-class Cliente(models.Model):
-    rut_cliente = models.CharField(max_length=9, primary_key=True)
-    nombre = models.CharField(max_length=100)
-    correo = models.CharField(max_length=100, unique=True)
-    direccion = models.CharField(max_length=100)
-    fono = models.IntegerField()
-
-    def __str__(self):
-        return f"Cliente {self.nombre}"
+class Usuario(models.Model):
+    Tipo_usuario = [
+        (0, 'Cliente'),
+        (1, 'Administrador')
+    ]
+    id_usuario = models.AutoField(primary_key=True)
+    user = models.CharField(max_length=30)
+    password = models.CharField(max_length=64)
+    tipo = models.IntegerField(choices = Tipo_usuario)
     
+    def __str__(self):
+        return f"Usuario: {self.user}"
 
 class Pedido(models.Model):
     Estado = [

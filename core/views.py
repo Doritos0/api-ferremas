@@ -1,3 +1,4 @@
+import json
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -10,8 +11,8 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 
 #IMPORTAMOS EL MODELO
-from .models import Producto, TipoProducto, Cliente, Pedido, Stock, Precio#, Oferta
-from .serializers import ProductoSerializer, TipoProductoSerializer, ClienteSerializer, PedidoSerializer, StockSerializer, PrecioSerializer#, OfertaSerializer
+from .models import Producto, TipoProducto, Usuario, Pedido, Stock, Precio#, Oferta
+from .serializers import ProductoSerializer, TipoProductoSerializer, UsuarioSerializer, PedidoSerializer, StockSerializer, PrecioSerializer#, OfertaSerializer
 
 # Create your views here.
 
@@ -107,18 +108,18 @@ def detalle_tipo (request,id):
     
 #API TABLA CLIENTE
 @api_view(['GET', 'POST'])
-def lista_clientes (request):
+def lista_usuarios (request):
     if request.method == 'GET':
-        query = Cliente.objects.all()
-        serializer = ClienteSerializer(query, many = True)
+        query = Usuario.objects.all()
+        serializer = UsuarioSerializer(query, many = True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = ClienteSerializer(data = request.data)
+        serializer = UsuarioSerializer(data = request.data)
         print("❤️ ", serializer)
         if serializer.is_valid():
-            id = request.POST.get('rut_cliente', None)
+            id = request.POST.get('user', None)
             print(id)
-            if id in Cliente.objects.values_list('rut_cliente', flat=True):
+            if id in Usuario.objects.values_list('user', flat=True):
                 print("💙 ESTE PRODUCTO YA HA SIDO INGRESADO")
                 return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -131,16 +132,16 @@ def lista_clientes (request):
 
 
 @api_view(['GET','PATCH','DELETE'])
-def detalle_cliente (request,rut):
+def detalle_usuario (request,user):
     try:
-        cliente = Cliente.objects.get(rut_cliente=rut)
-    except Cliente.DoesNotExist:
+        cliente = Usuario.objects.get(user=user)
+    except Usuario.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        serializer = ClienteSerializer(cliente)
+        serializer = UsuarioSerializer(cliente)
         return Response(serializer.data)
     elif request.method == 'PATCH':
-        serializer = ClienteSerializer(cliente, data=request.data, partial=True)
+        serializer = UsuarioSerializer(cliente, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -286,6 +287,7 @@ def detalle_precio (request,id):
         precio.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+
 '''
 #API TABLA OFERTA
 @api_view(['GET', 'POST'])
